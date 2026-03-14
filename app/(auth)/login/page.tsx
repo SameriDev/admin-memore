@@ -5,7 +5,7 @@ import { useState } from "react";
 
 export default function LoginPage() {
   const router = useRouter();
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -19,7 +19,7 @@ export default function LoginPage() {
       const response = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({ email, password }),
       });
 
       if (!response.ok) {
@@ -46,17 +46,18 @@ export default function LoginPage() {
           Sign in to the console
         </h1>
         <p className="mt-2 text-sm text-black/50">
-          Use the temporary admin credentials configured in the environment.
+          Sign in with your admin account.
         </p>
 
         <form className="mt-8 space-y-5" onSubmit={handleSubmit}>
           <label className="block text-xs uppercase tracking-[0.2em] text-black/50">
-            Username
+            Email
             <input
               className="mt-2 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm text-black outline-none transition focus:border-black/40"
-              value={username}
-              onChange={(event) => setUsername(event.target.value)}
-              autoComplete="username"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              autoComplete="email"
+              type="email"
               required
             />
           </label>

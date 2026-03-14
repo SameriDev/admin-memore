@@ -8,34 +8,12 @@ type BeFetchInit = RequestInit & {
   skipAuth?: boolean;
 };
 
-async function loginWithAdminCredentials(): Promise<string> {
-  const email = process.env.MEMORE_ADMIN_EMAIL;
-  const password = process.env.MEMORE_ADMIN_PASSWORD;
-
-  if (!email || !password) {
-    throw new Error("Missing MEMORE_ADMIN_EMAIL or MEMORE_ADMIN_PASSWORD");
-  }
-
-  const response = await fetch(`${BE_BASE_URL}/api/auth/login`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, password }),
-  });
-
-  const data = await response.json();
-  if (!response.ok || !data?.accessToken) {
-    throw new Error(data?.message ?? "Admin login failed");
-  }
-
-  return data.accessToken as string;
-}
-
 async function getToken(): Promise<string> {
   const token = cookies().get("memore_admin_token")?.value;
   if (token) {
     return token;
   }
-  return loginWithAdminCredentials();
+  throw new Error("Missing admin session token");
 }
 
 export async function beFetch(path: string, init: BeFetchInit = {}) {
@@ -52,12 +30,6 @@ export async function beFetch(path: string, init: BeFetchInit = {}) {
     headers,
     cache: "no-store",
   });
-
-  if (response.status === 401 && !init.skipAuth) {
-    const token = await loginWithAdminCredentials();
-    headers.set("Authorization", `Bearer ${token}`);
-    return fetch(url, { ...init, headers, cache: "no-store" });
-  }
 
   return response;
 }
