@@ -3,20 +3,82 @@ import { formatDate, formatNumber } from "@/lib/format";
 import type { AlbumDto } from "@/lib/types";
 import Link from "next/link";
 
-async function getAlbum(id: string): Promise<AlbumDto> {
+type AlbumResult =
+  | { album: AlbumDto; error?: undefined }
+  | { album?: undefined; error: string };
+
+const UUID_RE =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+async function getAlbum(id: string): Promise<AlbumResult> {
   const response = await beFetch(`/api/albums/${id}`);
   if (!response.ok) {
-    throw new Error("Failed to load album");
+    let detail = "";
+    try {
+      detail = await response.text();
+    } catch {
+      detail = "";
+    }
+    const suffix = detail ? ` - ${detail}` : "";
+    return {
+      error: `Failed to load album. Status ${response.status}${suffix}`,
+    };
   }
-  return response.json();
+  const album = (await response.json()) as AlbumDto;
+  return { album };
 }
 
 export default async function AlbumDetailPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
-  const album = await getAlbum(params.id);
+  const { id } = await params;
+
+  if (!UUID_RE.test(id)) {
+    return (
+      <div className="space-y-6">
+        <div>
+          <p className="text-xs uppercase tracking-[0.3em] text-black/50">
+            Album detail
+          </p>
+          <h2 className="mt-3 text-3xl font-semibold">Invalid album ID</h2>
+          <p className="text-sm text-black/50">
+            The provided album ID is not a valid UUID.
+          </p>
+        </div>
+        <Link
+          href="/albums"
+          className="inline-flex w-fit items-center rounded-full border border-black/20 px-4 py-2 text-xs uppercase tracking-[0.2em] text-black/70 hover:border-black/40"
+        >
+          Back to albums
+        </Link>
+      </div>
+    );
+  }
+
+  const result = await getAlbum(id);
+  if (!result.album) {
+    return (
+      <div className="space-y-6">
+        <div>
+          <p className="text-xs uppercase tracking-[0.3em] text-black/50">
+            Album detail
+          </p>
+          <h2 className="mt-3 text-3xl font-semibold">Failed to load album</h2>
+          <p className="text-sm text-black/50">{result.error}</p>
+        </div>
+        <Link
+          href="/albums"
+          className="inline-flex w-fit items-center rounded-full border border-black/20 px-4 py-2 text-xs uppercase tracking-[0.2em] text-black/70 hover:border-black/40"
+        >
+          Back to albums
+        </Link>
+      </div>
+    );
+  }
+
+  const { album } = result;
 
   return (
     <div className="space-y-8">

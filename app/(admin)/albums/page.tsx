@@ -16,10 +16,11 @@ async function getAlbums(page: number, size: number): Promise<Page<AlbumDto>> {
 export default async function AlbumsPage({
   searchParams,
 }: {
-  searchParams: { page?: string; size?: string };
+  searchParams: Promise<{ page?: string; size?: string }>;
 }) {
-  const page = Math.max(0, Number(searchParams.page ?? 0) || 0);
-  const size = Math.min(50, Math.max(10, Number(searchParams.size ?? 20) || 20));
+  const { page: pageParam, size: sizeParam } = await searchParams;
+  const page = Math.max(0, Number(pageParam ?? 0) || 0);
+  const size = Math.min(50, Math.max(10, Number(sizeParam ?? 20) || 20));
   const data = await getAlbums(page, size);
 
   async function deleteAlbum(formData: FormData) {
