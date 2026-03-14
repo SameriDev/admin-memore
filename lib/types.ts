@@ -68,4 +68,7 @@ export type AdminStats = {
   albumsCount: number;
   photosBySource: Record<string, number>;
   photosByQuality: Record<string, number>;
+  usersByBadge: Record<string, number>;
+  registrationsByMonth: Record<string, number>;
+  photosByMonth: Record<string, number>;
 };
