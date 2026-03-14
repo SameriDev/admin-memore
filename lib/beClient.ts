@@ -2,7 +2,7 @@ import "server-only";
 
 import { cookies } from "next/headers";
 
-const BE_BASE_URL = process.env.MEMORE_BE_BASE_URL ?? "http://localhost:8080";
+const BE_BASE_URL = "https://api.memore.vn";
 
 type BeFetchInit = RequestInit & {
   skipAuth?: boolean;

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-const BE_BASE_URL = process.env.MEMORE_BE_BASE_URL ?? "http://localhost:8080";
+const BE_BASE_URL = "https://api.memore.vn";
 
 export async function POST(request: Request) {
   const { email, password } = await request.json();
