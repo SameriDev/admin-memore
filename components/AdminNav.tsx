@@ -28,7 +28,7 @@ export default function AdminNav() {
             }`}
           >
             {item.label}
-            <span className="text-xs opacity-60">></span>
+            <span className="text-xs opacity-60">{">"}</span>
           </Link>
         );
       })}
