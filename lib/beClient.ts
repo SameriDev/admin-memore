@@ -9,7 +9,8 @@ type BeFetchInit = RequestInit & {
 };
 
 async function getToken(): Promise<string> {
-  const token = cookies().get("memore_admin_token")?.value;
+  const cookieStore = await cookies();
+  const token = cookieStore.get("memore_admin_token")?.value;
   if (token) {
     return token;
   }
