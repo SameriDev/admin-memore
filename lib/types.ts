@@ -22,6 +22,14 @@ export type UserDto = {
   lastActive?: string | null;
   isOnline?: boolean | null;
   role?: string | null;
+  subscriptionPlan?: string | null;
+  subscriptionExpiresAt?: string | null;
+  aiRequestsToday?: number | null;
+};
+
+export type UpdateSubscriptionRequest = {
+  plan: "FREE" | "SILVER" | "GOLD";
+  durationDays: number;
 };
 
 export type PhotoDto = {
