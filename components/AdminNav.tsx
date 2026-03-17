@@ -7,6 +7,7 @@ const navItems = [
   { href: "/dashboard", label: "Dashboard" },
   { href: "/users", label: "Users" },
   { href: "/albums", label: "Albums" },
+  { href: "/premium", label: "Premium" },
 ];
 
 export default function AdminNav() {
