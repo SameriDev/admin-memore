@@ -8,7 +8,7 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const response = await beFetch(`/api/admin/users/search?email=${encodeURIComponent(email)}`);
+    const response = await beFetch(`/api/admin/users/by-email?email=${encodeURIComponent(email)}`);
 
     if (response.status === 404 || !response.ok) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
